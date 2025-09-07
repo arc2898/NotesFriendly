@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSE CS Student Notes Friendly</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f8fafc; color:#1e293b; }
+    header { text-align:center; padding:20px; background:#2563eb; color:white; }
+    h1 { margin:0; }
+    main { max-width:900px; margin:20px auto; padding:20px; }
+    .card { background:white; border-radius:12px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,.08); margin-bottom:20px; }
+    .btn { display:inline-block; padding:10px 16px; margin:8px; border:none; border-radius:8px;
+           background:#2563eb; color:white; font-size:15px; cursor:pointer; transition:.2s; }
+    .btn:hover { background:#1e40af; }
+    .muted { background:#e2e8f0; color:#1e293b; }
+    .hidden { display:none; }
+    input[type=text] { padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px; width:70%; max-width:400px; }
+    footer { text-align:center; padding:20px; font-size:14px; color:#64748b; background:#f1f5f9; }
+    footer a { color:#e11d48; font-weight:bold; text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📘 CSE CS Student Notes Friendly</h1>
+    <p>Quick access to Notes & Exam Papers</p>
+  </header>
+
+  <main>
+    <!-- Search -->
+    <div class="card" id="searchCard">
+      <input id="search" type="text" placeholder="Search..." />
+      <button class="btn muted" onclick="doSearch()">Go</button>
+    </div>
+
+    <!-- Home Menu -->
+    <div id="home" class="card">
+      <button class="btn" onclick="openSection('class')">Class Notes</button>
+      <button class="btn" onclick="openSection('lab')">Lab Notes</button>
+      <button class="btn" onclick="openSection('exam')">Exam Papers</button>
+    </div>
+
+    <!-- Class Notes -->
+    <div id="class" class="card hidden">
+      <h2>Class Notes</h2>
+      <button class="btn muted" onclick="openSubject('Chemistry','Class')">Chemistry</button>
+      <button class="btn muted" onclick="openSubject('LA&C','Class')">LA&C</button>
+      <button class="btn muted" onclick="openSubject('IP','Class')">IP</button>
+      <button class="btn muted" onclick="openSubject('Aptitude','Class')">Aptitude</button>
+      <button class="btn muted" onclick="openSubject('CE','Class')">CE</button>
+      <button class="btn muted" onclick="openSubject('BCME','Class')">BCME</button>
+    </div>
+
+    <!-- Lab Notes -->
+    <div id="lab" class="card hidden">
+      <h2>Lab Notes</h2>
+      <button class="btn muted" onclick="openSubject('Chemistry','Lab')">Chemistry</button>
+      <button class="btn muted" onclick="openSubject('EWS','Lab')">EWS</button>
+      <button class="btn muted" onclick="openSubject('IP','Lab')">IP</button>
+      <button class="btn muted" onclick="openSubject('CE','Lab')">CE</button>
+    </div>
+
+    <!-- Exam Papers -->
+    <div id="exam" class="card hidden">
+      <h2>Exam Papers</h2>
+      <button class="btn muted" onclick="openExam('Semester')">Semester</button>
+      <button class="btn muted" onclick="openExam('Mid')">Mid</button>
+    </div>
+
+    <!-- Subject Viewer -->
+    <div id="subject" class="card hidden">
+      <h3 id="subjectTitle">Subject</h3>
+      <div id="subjectButtons"></div>
+      <br><br>
+      <button class="btn" onclick="goHome()">Back</button>
+    </div>
+
+    <!-- Exam Viewer -->
+    <div id="examDetail" class="card hidden">
+      <h3 id="examTitle">Exam</h3>
+      <div id="examButtons"></div>
+      <br><br>
+      <button class="btn" onclick="goHome()">Back</button>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin" class="card hidden">
+      <h2>Admin Panel</h2>
+      <p>Total Visitors: <span id="visitorCount">0</span></p>
+      <label>Upload File: <input type="file" /></label>
+      <p style="font-size:12px; color:#64748b;">(Demo only – backend not connected)</p>
+      <button class="btn" onclick="goHome()">Back</button>
+    </div>
+  </main>
+
+  <footer>
+    Created by 
+    <a href="https://instagram.com/crimson_arc/" target="_blank">ARC</a>
+  </footer>
+
+  <script>
+    function hideAll() {
+      document.querySelectorAll('#class,#lab,#exam,#subject,#examDetail,#admin').forEach(c => c.classList.add('hidden'));
+    }
+    function goHome() {
+      hideAll(); document.getElementById('home').classList.remove('hidden');
+    }
+    function openSection(id) {
+      hideAll(); document.getElementById(id).classList.remove('hidden');
+    }
+    function openSubject(name, type) {
+      hideAll();
+      document.getElementById('subject').classList.remove('hidden');
+      document.getElementById('subjectTitle').innerText = type + ' - ' + name;
+
+      const container = document.getElementById('subjectButtons');
+      container.innerHTML = `
+        <button class="btn muted" onclick="alert('${name} Front Side PDF')">${name} Front Side</button>
+        <button class="btn muted" onclick="alert('${name} Back Side PDF')">${name} Back Side</button>
+      `;
+    }
+    function openExam(name) {
+      hideAll();
+      document.getElementById('examDetail').classList.remove('hidden');
+      document.getElementById('examTitle').innerText = name + ' Exam';
+
+      const container = document.getElementById('examButtons');
+      container.innerHTML = `
+        <button class="btn muted" onclick="alert('${name} Questions PDF')">${name} Questions</button>
+        <button class="btn muted" onclick="alert('${name} Answers PDF')">${name} Answers</button>
+      `;
+    }
+    function doSearch() {
+      const q = document.getElementById('search').value.trim();
+      if (!q) return alert("Enter a keyword");
+      if (q === '********') {
+        hideAll(); document.getElementById('admin').classList.remove('hidden');
+        document.getElementById('visitorCount').innerText = Math.floor(Math.random()*500+50);
+      } else {
+        alert("Search results for: " + q + " (demo only)");
+      }
+    }
+    // Start at home
+    goHome();
+  </script>
+</body>
+</html>
